@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lojinha dos Gatinhos</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            if (!sessionStorage.getItem("autenticado")) {
+                document.getElementById("login-container").style.display = "flex";
+            } else {
+                iniciarLojinha();
+            }
+        });
+        
+        const senhaCorreta = "meugatinho";
+        const senhaAdmin = "gatinhamanhosa";
+        
+        function login() {
+            const senha = document.getElementById("senha").value;
+            if (senha === senhaCorreta || senha === senhaAdmin) {
+                sessionStorage.setItem("autenticado", "true");
+                if (senha === senhaAdmin) {
+                    sessionStorage.setItem("admin", "true");
+                }
+                document.getElementById("login-container").style.display = "none";
+                iniciarLojinha();
+            } else {
+                alert("Senha incorreta!");
+            }
+        }
+        
+        function iniciarLojinha() {
+            atualizarSaldo();
+            atualizarHistorico();
+            document.getElementById("loja-container").style.display = "block";
+            if (sessionStorage.getItem("admin")) {
+                document.getElementById("admin-actions").style.display = "block";
+            }
+        }
+        
+        function carregarSaldo() {
+            return parseInt(localStorage.getItem("saldoGatinhos")) || 100;
+        }
+        
+        function salvarSaldo(novoSaldo) {
+            localStorage.setItem("saldoGatinhos", novoSaldo);
+            atualizarSaldo();
+        }
+        
+        function atualizarSaldo() {
+            document.getElementById("saldo").innerText = carregarSaldo();
+        }
+        
+        function comprar(item, preco) {
+            let saldo = carregarSaldo();
+            if (saldo >= preco) {
+                saldo -= preco;
+                salvarSaldo(saldo);
+                alert(`Você comprou: ${item} por ${preco} gatinhos!`);
+                registrarCompra(item, preco);
+            } else {
+                alert("Saldo insuficiente!");
+            }
+        }
+        
+        function adicionarGatinhos() {
+            if (confirm("Tem certeza que deseja adicionar 50 gatinhos?")) {
+                let saldo = carregarSaldo();
+                saldo += 50;
+                salvarSaldo(saldo);
+                alert("50 gatinhos adicionados!");
+            }
+        }
+        
+        function registrarCompra(item, preco) {
+            let historico = JSON.parse(localStorage.getItem("historicoCompras")) || [];
+            historico.push({ item, preco, data: new Date().toLocaleString() });
+            localStorage.setItem("historicoCompras", JSON.stringify(historico));
+            atualizarHistorico();
+        }
+        
+        function atualizarHistorico() {
+            let historico = JSON.parse(localStorage.getItem("historicoCompras")) || [];
+            const lista = document.getElementById("historico");
+            lista.innerHTML = "";
+            historico.forEach(compra => {
+                let li = document.createElement("li");
+                li.textContent = `${compra.data}: ${compra.item} - ${compra.preco} gatinhos`;
+                lista.appendChild(li);
+            });
+        }
+    </script>
+        <style>
+            body { background-color: #ffd1dc; font-family: "Comic Sans MS", cursive, sans-serif; text-align: center; padding: 20px; margin: 0; color: #ff69b4; }
+            .container { max-width: 500px; margin: auto; padding: 20px; background: #fff0f5; border-radius: 20px; box-shadow: 0 0 10px pink; }
+            .item { display: block; margin: 10px auto; padding: 15px; border: 2px solid #ffb6c1; cursor: pointer; transition: 0.3s; border-radius: 10px; background: #ffe4e1; color: #ff1493; font-weight: bold; }
+            .item:hover { background-color: #ffc0cb; }
+            .historico { margin-top: 20px; text-align: left; background: #fff0f5; padding: 10px; border-radius: 10px; }
+            .login-container { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffc0cb; display: flex; align-items: center; justify-content: center; }
+            .login-box { background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 0 10px pink; }
+            .login-box input { padding: 10px; margin: 10px 0; width: 80%; border: 2px solid #ff69b4; border-radius: 5px; }
+            .login-box button { padding: 10px; width: 80%; background: #ff69b4; border: none; color: white; border-radius: 5px; cursor: pointer; }
+            #loja-container { display: none; }
+            #admin-actions { display: none; margin-top: 20px; }
+        </style>
+</head>
+<body>
+    <div id="login-container" class="login-container">
+        <div class="login-box">
+            <h2>🔑 Login</h2>
+            <input type="password" id="senha" placeholder="Digite a senha">
+            <button onclick="login()">Entrar</button>
+        </div>
+    </div>
+
+    <div id="loja-container" class="container">
+        <h1>🐱 Lojinha dos Gatinhos 🛍</h1>
+        <h2>Saldo: <span id="saldo"></span> 🐾</h2>
+        <div class="item" onclick="comprar('Abraço especial', 20)">🤗 Abraço especial - 20 gatinhos</div>
+        <div class="item" onclick="comprar('Café da manhã na cama', 50)">☕ Café na cama - 50 gatinhos</div>
+        <div class="item" onclick="comprar('Maratona de filmes', 80)">🎬 Maratona de filmes - 80 gatinhos</div>
+        <br>
+        <div id="admin-actions">
+            <button onclick="adicionarGatinhos()">Adicionar +50 gatinhos (Modo Admin)</button>
+        </div>
+        <div class="historico">
+            <h3>📜 Histórico de Compras:</h3>
+            <ul id="historico"></ul>
+        </div>
+    </div>
+</body>
+</html>
