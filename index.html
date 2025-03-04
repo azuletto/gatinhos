@@ -3,7 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lojinha dos Gatinhos 🐾</title>
+    <title>Lojinha</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f8f8f8; color: #333; text-align: center; padding: 20px; }
+        .container { max-width: 400px; margin: auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1, h2, h3 { margin-bottom: 10px; }
+        .saldo { margin-bottom: 20px; padding: 10px; background: #f1f1f1; border-radius: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #eee; }
+        .botao { display: block; width: 100%; margin-top: 10px; padding: 8px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .botao:hover { background: #0056b3; }
+        #admin-actions { display: none; margin-top: 20px; }
+        .historico { margin-top: 20px; text-align: left; background: #f9f9f9; padding: 10px; border-radius: 5px; }
+    </style>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             if (!sessionStorage.getItem("autenticado")) {
@@ -22,13 +36,11 @@
             const senha = document.getElementById("senha").value;
             if (senha === senhaCorreta || senha === senhaAdmin) {
                 sessionStorage.setItem("autenticado", "true");
-                if (senha === senhaAdmin) {
-                    sessionStorage.setItem("admin", "true");
-                }
+                if (senha === senhaAdmin) sessionStorage.setItem("admin", "true");
                 document.getElementById("login-container").style.display = "none";
                 iniciarLojinha();
             } else {
-                alert("Senha incorreta! 😿");
+                alert("Senha incorreta!");
             }
         }
 
@@ -49,37 +61,34 @@
             if (usarCredito) {
                 if (credito >= preco) {
                     credito -= preco;
-                    atualizarSaldos();
-                    alert(`Você comprou: ${item} por ${preco} gatinhos de crédito! 💖`);
+                    alert(`Você comprou: ${item} por ${preco} créditos`);
                     registrarCompra(item, preco, "crédito");
                 } else {
-                    alert("Créditos insuficientes! 😿");
+                    alert("Créditos insuficientes!");
                 }
             } else {
                 if (saldo >= preco) {
                     saldo -= preco;
-                    atualizarSaldos();
-                    alert(`Você comprou: ${item} por ${preco} gatinhos! 🐾`);
-                    registrarCompra(item, preco, "gatinhos normais");
+                    alert(`Você comprou: ${item} por ${preco} gatinhos`);
+                    registrarCompra(item, preco, "saldo");
                 } else {
-                    alert("Saldo insuficiente! 😿");
+                    alert("Saldo insuficiente!");
                 }
             }
+            atualizarSaldos();
         }
 
         function adicionarGatinhos() {
-            if (confirm("Tem certeza que deseja adicionar 50 gatinhos? 🐾")) {
+            if (confirm("Adicionar 50 gatinhos?")) {
                 saldo += 50;
                 atualizarSaldos();
-                alert("50 gatinhos adicionados! 🐱✨");
             }
         }
 
         function adicionarCredito() {
-            if (confirm("Deseja adicionar 50 gatinhos de crédito? 💖")) {
+            if (confirm("Adicionar 50 créditos?")) {
                 credito += 50;
                 atualizarSaldos();
-                alert("50 gatinhos de crédito adicionados! 🎀");
             }
         }
 
@@ -90,55 +99,48 @@
             lista.appendChild(li);
         }
     </script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
-        body { background: #ffebef; color: #ff4f82; text-align: center; padding: 20px; }
-        .container { max-width: 400px; margin: auto; padding: 20px; background: #fff; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        table { width: 100%; margin-top: 15px; border-collapse: collapse; background: #fff7f8; border-radius: 10px; }
-        th, td { padding: 10px; border-bottom: 1px solid #ffb6c1; text-align: left; }
-        th { background: #ff4f82; color: white; }
-        .login-container { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 192, 203, 0.9); display: flex; align-items: center; justify-content: center; }
-        .login-box { background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); }
-        .login-box input { padding: 10px; margin: 10px 0; width: 100%; border: 2px solid #ff69b4; border-radius: 5px; }
-        .login-box button { padding: 10px; width: 100%; background: #ff69b4; border: none; color: white; border-radius: 5px; cursor: pointer; }
-        #loja-container { display: none; }
-        #admin-actions { display: none; margin-top: 20px; }
-        .saldo-box { margin-bottom: 20px; padding: 10px; background: #fff2f4; border-radius: 10px; }
-        .botao-credito { background: #ff4f82; color: white; padding: 8px; border-radius: 5px; cursor: pointer; border: none; margin-top: 5px; }
-        .botao-credito:hover { background: #ff2f62; }
-    </style>
 </head>
 <body>
-    <div id="login-container" class="login-container">
-        <div class="login-box">
-            <h2>🔑 Login</h2>
-            <input type="password" id="senha" placeholder="Digite a senha">
-            <button onclick="login()">Entrar</button>
+    <div id="login-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 20px; border-radius: 5px; text-align: center;">
+            <h2>Login</h2>
+            <input type="password" id="senha" placeholder="Digite a senha" style="padding: 8px; width: 100%; margin-bottom: 10px;">
+            <button onclick="login()" style="padding: 8px; width: 100%; background: #007bff; color: white; border: none; border-radius: 5px;">Entrar</button>
         </div>
     </div>
 
-    <div id="loja-container" class="container">
-        <h1>🐱 Lojinha dos Gatinhos 🛍</h1>
-        <div class="saldo-box">
-            <h2>Saldo: <span id="saldo"></span> 🐾</h2>
-            <h2>Crédito: <span id="credito"></span> 💖</h2>
+    <div id="loja-container" class="container" style="display: none;">
+        <h1>Lojinha</h1>
+        <div class="saldo">
+            <h2>Saldo: <span id="saldo"></span></h2>
+            <h2>Crédito: <span id="credito"></span></h2>
         </div>
 
-        <h3>Itens Disponíveis</h3>
+        <h3>Itens pequenos</h3>
         <table>
-            <tr><th>Item</th><th>Preço</th><th>Ação</th></tr>
-            <tr><td>🤗 Abraço especial</td><td>20 🐱</td><td><button onclick="comprar('Abraço especial', 20)">Comprar</button></td></tr>
-            <tr><td>☕ Café na cama</td><td>50 🐱</td><td><button onclick="comprar('Café da manhã na cama', 50)">Comprar</button></td></tr>
-            <tr><td>🎬 Maratona de filmes</td><td>80 🐱</td><td><button onclick="comprar('Maratona de filmes', 80)">Comprar</button></td></tr>
-            <tr><td>🍪 Um pacote de bolacha</td><td>200 🐱</td><td><button onclick="comprar('Pacote de bolacha', 200)">Comprar</button></td></tr>
-            <tr><td>🍲 Um sopão (Dantas)</td><td>350 🐱</td><td><button onclick="comprar('Sopão', 350)">Comprar</button></td></tr>
-            <tr><td>👫 Um dia de ajuda</td><td>750 🐱</td><td><button onclick="comprar('Um dia inteiro ajudando', 750)">Comprar</button></td></tr>
-            <tr><td>🍨 Date de açaí</td><td>750 🐱</td><td><button onclick="comprar('Date de açaí', 750)">Comprar</button></td></tr>
-            <tr><td>🎁 Item de até R$30 Shopee</td><td>1200 🐱</td><td><button onclick="comprar('Item Shopee', 1200)">Comprar</button></td></tr>
+            <tr><th>Item</th><th>Preço</th><th>Comprar</th></tr>
+            <tr><td>Abraço especial</td><td>20</td><td><button class="botao" onclick="comprar('Abraço especial', 20)">Saldo</button></td></tr>
+            <tr><td>Café na cama</td><td>50</td><td><button class="botao" onclick="comprar('Café na cama', 50)">Saldo</button></td></tr>
+            <tr><td>Maratona de filmes</td><td>80</td><td><button class="botao" onclick="comprar('Maratona de filmes', 80)">Saldo</button></td></tr>
         </table>
 
+        <h3>Itens maiores</h3>
+        <table>
+            <tr><th>Item</th><th>Preço</th><th>Comprar</th></tr>
+            <tr><td>Pacote de bolacha</td><td>200</td><td><button class="botao" onclick="comprar('Pacote de bolacha', 200)">Saldo</button></td></tr>
+            <tr><td>Sopão (Dantas)</td><td>350</td><td><button class="botao" onclick="comprar('Sopão', 350)">Saldo</button></td></tr>
+            <tr><td>Ajuda diária</td><td>750</td><td><button class="botao" onclick="comprar('Ajuda diária', 750)">Saldo</button></td></tr>
+            <tr><td>Date de açaí</td><td>750</td><td><button class="botao" onclick="comprar('Date de açaí', 750)">Saldo</button></td></tr>
+            <tr><td>Item até R$30 Shopee</td><td>1200</td><td><button class="botao" onclick="comprar('Item Shopee', 1200)">Saldo</button></td></tr>
+        </table>
+
+        <div id="admin-actions">
+            <button class="botao" onclick="adicionarGatinhos()">+50 gatinhos</button>
+            <button class="botao" onclick="adicionarCredito()">+50 créditos</button>
+        </div>
+
         <div class="historico">
-            <h3>📜 Histórico de Compras:</h3>
+            <h3>Histórico de Compras</h3>
             <ul id="historico"></ul>
         </div>
     </div>
