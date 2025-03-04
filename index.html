@@ -12,10 +12,11 @@
                 iniciarLojinha();
             }
         });
-        
+
         const senhaCorreta = "meugatinho";
         const senhaAdmin = "gatinhamanhosa";
-        
+        let saldo = 100;
+
         function login() {
             const senha = document.getElementById("senha").value;
             if (senha === senhaCorreta || senha === senhaAdmin) {
@@ -29,81 +30,59 @@
                 alert("Senha incorreta!");
             }
         }
-        
+
         function iniciarLojinha() {
             atualizarSaldo();
-            atualizarHistorico();
             document.getElementById("loja-container").style.display = "block";
             if (sessionStorage.getItem("admin")) {
                 document.getElementById("admin-actions").style.display = "block";
             }
         }
-        
-        function carregarSaldo() {
-            return parseInt(localStorage.getItem("saldoGatinhos")) || 100;
-        }
-        
-        function salvarSaldo(novoSaldo) {
-            localStorage.setItem("saldoGatinhos", novoSaldo);
-            atualizarSaldo();
-        }
-        
+
         function atualizarSaldo() {
-            document.getElementById("saldo").innerText = carregarSaldo();
+            document.getElementById("saldo").innerText = saldo;
         }
-        
+
         function comprar(item, preco) {
-            let saldo = carregarSaldo();
             if (saldo >= preco) {
                 saldo -= preco;
-                salvarSaldo(saldo);
+                atualizarSaldo();
                 alert(`Você comprou: ${item} por ${preco} gatinhos!`);
                 registrarCompra(item, preco);
             } else {
                 alert("Saldo insuficiente!");
             }
         }
-        
+
         function adicionarGatinhos() {
             if (confirm("Tem certeza que deseja adicionar 50 gatinhos?")) {
-                let saldo = carregarSaldo();
                 saldo += 50;
-                salvarSaldo(saldo);
+                atualizarSaldo();
                 alert("50 gatinhos adicionados!");
             }
         }
-        
+
         function registrarCompra(item, preco) {
-            let historico = JSON.parse(localStorage.getItem("historicoCompras")) || [];
-            historico.push({ item, preco, data: new Date().toLocaleString() });
-            localStorage.setItem("historicoCompras", JSON.stringify(historico));
-            atualizarHistorico();
-        }
-        
-        function atualizarHistorico() {
-            let historico = JSON.parse(localStorage.getItem("historicoCompras")) || [];
             const lista = document.getElementById("historico");
-            lista.innerHTML = "";
-            historico.forEach(compra => {
-                let li = document.createElement("li");
-                li.textContent = `${compra.data}: ${compra.item} - ${compra.preco} gatinhos`;
-                lista.appendChild(li);
-            });
+            let li = document.createElement("li");
+            li.textContent = `${new Date().toLocaleString()}: ${item} - ${preco} gatinhos`;
+            lista.appendChild(li);
         }
     </script>
-        <style>
-            body { background-color: #ffd1dc; font-family: "Comic Sans MS", cursive, sans-serif; text-align: center; padding: 20px; margin: 0; color: #ff69b4; }
-            .container { max-width: 500px; margin: auto; padding: 20px; background: #fff0f5; border-radius: 20px; box-shadow: 0 0 10px pink; }
-            .item { display: block; margin: 10px auto; padding: 15px; border: 2px solid #ffb6c1; cursor: pointer; transition: 0.3s; border-radius: 10px; background: #ffe4e1; color: #ff1493; font-weight: bold; }
-            .item:hover { background-color: #ffc0cb; }
-            .historico { margin-top: 20px; text-align: left; background: #fff0f5; padding: 10px; border-radius: 10px; }
-            .login-container { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffc0cb; display: flex; align-items: center; justify-content: center; }
-            .login-box { background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 0 10px pink; }
-            .login-box input { padding: 10px; margin: 10px 0; width: 80%; border: 2px solid #ff69b4; border-radius: 5px; }
-            .login-box button { padding: 10px; width: 80%; background: #ff69b4; border: none; color: white; border-radius: 5px; cursor: pointer; }
-            #loja-container { display: none; }
-            #admin-actions { display: none; margin-top: 20px; }
-        </style>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+        body { background: #ffebef; color: #ff4f82; text-align: center; padding: 20px; }
+        .container { max-width: 400px; margin: auto; padding: 20px; background: #fff; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .item { margin: 10px 0; padding: 15px; border-radius: 10px; background: #ffe3e6; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        .item:hover { background: #ffcdd2; }
+        .historico { margin-top: 20px; text-align: left; background: #fff7f8; padding: 10px; border-radius: 10px; }
+        .login-container { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 192, 203, 0.9); display: flex; align-items: center; justify-content: center; }
+        .login-box { background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); }
+        .login-box input { padding: 10px; margin: 10px 0; width: 100%; border: 2px solid #ff69b4; border-radius: 5px; }
+        .login-box button { padding: 10px; width: 100%; background: #ff69b4; border: none; color: white; border-radius: 5px; cursor: pointer; }
+        #loja-container { display: none; }
+        #admin-actions { display: none; margin-top: 20px; }
+    </style>
 </head>
 <body>
     <div id="login-container" class="login-container">
