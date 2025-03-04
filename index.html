@@ -94,9 +94,9 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
         body { background: #ffebef; color: #ff4f82; text-align: center; padding: 20px; }
         .container { max-width: 400px; margin: auto; padding: 20px; background: #fff; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .item { margin: 10px 0; padding: 15px; border-radius: 10px; background: #ffe3e6; cursor: pointer; transition: 0.3s; font-weight: bold; }
-        .item:hover { background: #ffcdd2; }
-        .historico { margin-top: 20px; text-align: left; background: #fff7f8; padding: 10px; border-radius: 10px; }
+        table { width: 100%; margin-top: 15px; border-collapse: collapse; background: #fff7f8; border-radius: 10px; }
+        th, td { padding: 10px; border-bottom: 1px solid #ffb6c1; text-align: left; }
+        th { background: #ff4f82; color: white; }
         .login-container { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 192, 203, 0.9); display: flex; align-items: center; justify-content: center; }
         .login-box { background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); }
         .login-box input { padding: 10px; margin: 10px 0; width: 100%; border: 2px solid #ff69b4; border-radius: 5px; }
@@ -104,7 +104,7 @@
         #loja-container { display: none; }
         #admin-actions { display: none; margin-top: 20px; }
         .saldo-box { margin-bottom: 20px; padding: 10px; background: #fff2f4; border-radius: 10px; }
-        .botao-credito { background: #ff4f82; color: white; padding: 8px; border-radius: 5px; cursor: pointer; border: none; }
+        .botao-credito { background: #ff4f82; color: white; padding: 8px; border-radius: 5px; cursor: pointer; border: none; margin-top: 5px; }
         .botao-credito:hover { background: #ff2f62; }
     </style>
 </head>
@@ -123,17 +123,20 @@
             <h2>Saldo: <span id="saldo"></span> 🐾</h2>
             <h2>Crédito: <span id="credito"></span> 💖</h2>
         </div>
-        <div class="item" onclick="comprar('Abraço especial', 20)">🤗 Abraço especial - 20 gatinhos</div>
-        <button class="botao-credito" onclick="comprar('Abraço especial', 20, true)">Comprar com crédito</button>
-        <div class="item" onclick="comprar('Café da manhã na cama', 50)">☕ Café na cama - 50 gatinhos</div>
-        <button class="botao-credito" onclick="comprar('Café da manhã na cama', 50, true)">Comprar com crédito</button>
-        <div class="item" onclick="comprar('Maratona de filmes', 80)">🎬 Maratona de filmes - 80 gatinhos</div>
-        <button class="botao-credito" onclick="comprar('Maratona de filmes', 80, true)">Comprar com crédito</button>
-        <br>
-        <div id="admin-actions">
-            <button onclick="adicionarGatinhos()">Adicionar +50 gatinhos (Modo Admin)</button>
-            <button onclick="adicionarCredito()">Adicionar +50 créditos (Modo Admin)</button>
-        </div>
+
+        <h3>Itens Disponíveis</h3>
+        <table>
+            <tr><th>Item</th><th>Preço</th><th>Ação</th></tr>
+            <tr><td>🤗 Abraço especial</td><td>20 🐱</td><td><button onclick="comprar('Abraço especial', 20)">Comprar</button></td></tr>
+            <tr><td>☕ Café na cama</td><td>50 🐱</td><td><button onclick="comprar('Café da manhã na cama', 50)">Comprar</button></td></tr>
+            <tr><td>🎬 Maratona de filmes</td><td>80 🐱</td><td><button onclick="comprar('Maratona de filmes', 80)">Comprar</button></td></tr>
+            <tr><td>🍪 Um pacote de bolacha</td><td>200 🐱</td><td><button onclick="comprar('Pacote de bolacha', 200)">Comprar</button></td></tr>
+            <tr><td>🍲 Um sopão (Dantas)</td><td>350 🐱</td><td><button onclick="comprar('Sopão', 350)">Comprar</button></td></tr>
+            <tr><td>👫 Um dia de ajuda</td><td>750 🐱</td><td><button onclick="comprar('Um dia inteiro ajudando', 750)">Comprar</button></td></tr>
+            <tr><td>🍨 Date de açaí</td><td>750 🐱</td><td><button onclick="comprar('Date de açaí', 750)">Comprar</button></td></tr>
+            <tr><td>🎁 Item de até R$30 Shopee</td><td>1200 🐱</td><td><button onclick="comprar('Item Shopee', 1200)">Comprar</button></td></tr>
+        </table>
+
         <div class="historico">
             <h3>📜 Histórico de Compras:</h3>
             <ul id="historico"></ul>
